@@ -330,7 +330,7 @@ bool QuaZipDirPrivate::entryInfoList(QStringList nameFilters,
     result.clear();
     QuaZipDirRestoreCurrent saveCurrent(zip);
     if (!zip->goToFirstFile()) {
-        return zip->getZipError() == UNZ_OK;
+        return zip->getZipError() == ZIP_OK;
     }
     QDir::Filters fltr = filter;
     if (fltr == QDir::NoFilter)

@@ -50,21 +50,7 @@
 extern "C" {
 #endif
 
-//#define HAVE_BZIP2
-
-#ifndef _ZLIB_H
-#include "zlib.h"
-#endif
-
-#ifndef _ZLIBIOAPI_H
-#include "ioapi.h"
-#endif
-
-#ifdef HAVE_BZIP2
-#include "bzlib.h"
-#endif
-
-#define Z_BZIP2ED 12
+#include "common.h"
 
 #if defined(STRICTZIP) || defined(STRICTZIPUNZIP)
 /* like the STRICT of WIN32, we define a pointer that cannot be converted
@@ -74,13 +60,6 @@ typedef zipFile__ *zipFile;
 #else
 typedef voidp zipFile;
 #endif
-
-#define ZIP_OK                          (0)
-#define ZIP_EOF                         (0)
-#define ZIP_ERRNO                       (Z_ERRNO)
-#define ZIP_PARAMERROR                  (-102)
-#define ZIP_BADZIPFILE                  (-103)
-#define ZIP_INTERNALERROR               (-104)
 
 #define ZIP_WRITE_DATA_DESCRIPTOR 0x8u
 #define ZIP_AUTO_CLOSE 0x1u

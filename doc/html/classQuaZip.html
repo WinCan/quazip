@@ -654,8 +654,8 @@ If the <a class="el" href="classQuaZip.html#a54bfc924762774ccf9f99be075ba7b0e">n
 </div><div class="memdoc">
 
 <p>Returns the error code of the last operation. </p>
-<p>Returns <code>UNZ_OK</code> if the last operation was successful.</p>
-<p>Error code resets to <code>UNZ_OK</code> every time you call any function that accesses something inside ZIP archive, even if it is <code>const</code> (like <a class="el" href="classQuaZip.html#a2ea4bd1fca948637c35c2d2752bb5a80" title="Returns number of the entries in the ZIP central directory. ">getEntriesCount()</a>). <a class="el" href="classQuaZip.html#abfa4e6018b2964a3d10a4c54e5ab3962" title="Opens ZIP file. ">open()</a> and <a class="el" href="classQuaZip.html#a7a4323b73e12f3b4470109f200728f9f" title="Closes ZIP file. ">close()</a> calls reset error code too. See documentation for the specific functions for details on error detection. </p>
+<p>Returns <code>ZIP_OK</code> if the last operation was successful.</p>
+<p>Error code resets to <code>ZIP_OK</code> every time you call any function that accesses something inside ZIP archive, even if it is <code>const</code> (like <a class="el" href="classQuaZip.html#a2ea4bd1fca948637c35c2d2752bb5a80" title="Returns number of the entries in the ZIP central directory. ">getEntriesCount()</a>). <a class="el" href="classQuaZip.html#abfa4e6018b2964a3d10a4c54e5ab3962" title="Opens ZIP file. ">open()</a> and <a class="el" href="classQuaZip.html#a7a4323b73e12f3b4470109f200728f9f" title="Closes ZIP file. ">close()</a> calls reset error code too. See documentation for the specific functions for details on error detection. </p>
 
 <p>Referenced by <a class="el" href="classQuaZipFile.html#a42a39b12619bccd3d419ee60bbb3fcf6">QuaZipFile::close()</a>, <a class="el" href="classJlCompress.html#ada7511686a24c014e9db25735be148a7">JlCompress::compressDir()</a>, <a class="el" href="classJlCompress.html#a4a4de9c62ecf161bb658d4d80495ea97">JlCompress::compressFile()</a>, <a class="el" href="classJlCompress.html#a9cdb92d29a94c6b13a718a3249685846">JlCompress::compressFiles()</a>, <a class="el" href="classQuaZipFile.html#a7b8e3c39026855cd98661a1b2815c220">QuaZipFile::getActualFileName()</a>, <a class="el" href="classQuaZipFile.html#af35876a5ac6e9c35234275a9e503110d">QuaZipFile::getFileInfo()</a>, and <a class="el" href="classQuaZipFile.html#aed75bace51f2bb4c3e4f656ab4493aac">QuaZipFile::open()</a>.</p>
 
@@ -737,10 +737,10 @@ If the <a class="el" href="classQuaZip.html#a54bfc924762774ccf9f99be075ba7b0e">n
 <p>Sets the current file to the next file in the archive. </p>
 <p>Returns <code>true</code> on success, <code>false</code> otherwise. Call <a class="el" href="classQuaZip.html#a28b91a6282ddd9382c96a069572c6fb4" title="Returns the error code of the last operation. ">getZipError()</a> to determine if there was an error.</p>
 <p>Should be used only in <a class="el" href="classQuaZip.html#a47e28d4116ee716fdd6b431b821d0be4a803a371910c2dc830d111e9ce5b58897" title="ZIP file is open for reading files inside it. ">QuaZip::mdUnzip</a> mode.</p>
-<dl class="section note"><dt>Note</dt><dd>If the end of file was reached, <a class="el" href="classQuaZip.html#a28b91a6282ddd9382c96a069572c6fb4" title="Returns the error code of the last operation. ">getZipError()</a> will return <code>UNZ_OK</code> instead of <code>UNZ_END_OF_LIST_OF_FILE</code>. This is to make things like this easier: <div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">bool</span> more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {</div>
+<dl class="section note"><dt>Note</dt><dd>If the end of file was reached, <a class="el" href="classQuaZip.html#a28b91a6282ddd9382c96a069572c6fb4" title="Returns the error code of the last operation. ">getZipError()</a> will return <code>ZIP_OK</code> instead of <code>ZIP_END_OF_LIST_OF_FILE</code>. This is to make things like this easier: <div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">bool</span> more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {</div>
 <div class="line">  <span class="comment">// do something</span></div>
 <div class="line">}</div>
-<div class="line"><span class="keywordflow">if</span>(zip.getZipError()==UNZ_OK) {</div>
+<div class="line"><span class="keywordflow">if</span>(zip.getZipError()==ZIP_OK) {</div>
 <div class="line">  <span class="comment">// ok, there was no error</span></div>
 <div class="line">}</div>
 </div><!-- fragment --> </dd></dl>
@@ -780,7 +780,7 @@ If the <a class="el" href="classQuaZip.html#a54bfc924762774ccf9f99be075ba7b0e">n
 <p>This is not a wrapper to unzLocateFile() function. That is because I had to implement locale-specific case-insensitive comparison.</p>
 <p>Here are the differences from the original implementation:</p>
 <ul>
-<li>If the file was not found, error code is <code>UNZ_OK</code>, not <code>UNZ_END_OF_LIST_OF_FILE</code> (see also <a class="el" href="classQuaZip.html#aee6779b6cd338420c2e8c5655fa8ba97" title="Sets the current file to the next file in the archive. ">goToNextFile()</a>).</li>
+<li>If the file was not found, error code is <code>ZIP_OK</code>, not <code>ZIP_END_OF_LIST_OF_FILE</code> (see also <a class="el" href="classQuaZip.html#aee6779b6cd338420c2e8c5655fa8ba97" title="Sets the current file to the next file in the archive. ">goToNextFile()</a>).</li>
 <li>If this function fails, it unsets the current file rather than resetting it back to what it was before the call.</li>
 </ul>
 <p>If <em>fileName</em> is null string then this function unsets the current file and return <code>true</code>. Note that you should close the file first if it is open! See <a class="el" href="classQuaZipFile.html#a54e944a6b3d27030f64c8f30d2cc33bb" title="Constructs a QuaZipFile instance. ">QuaZipFile::QuaZipFile(QuaZip*,QObject*)</a> for the details.</p>
@@ -815,7 +815,7 @@ If the <a class="el" href="classQuaZip.html#a54bfc924762774ccf9f99be075ba7b0e">n
 <li>ZIP is not open;</li>
 <li>ZIP does not have current file.</li>
 </ul>
-<p>In both cases <a class="el" href="classQuaZip.html#a28b91a6282ddd9382c96a069572c6fb4" title="Returns the error code of the last operation. ">getZipError()</a> returns <code>UNZ_OK</code> since there is no ZIP/UNZIP API call.</p>
+<p>In both cases <a class="el" href="classQuaZip.html#a28b91a6282ddd9382c96a069572c6fb4" title="Returns the error code of the last operation. ">getZipError()</a> returns <code>ZIP_OK</code> since there is no ZIP/UNZIP API call.</p>
 <p>This overload doesn't support zip64, but will work OK on zip64 archives except that if one of the sizes (compressed or uncompressed) is greater than 0xFFFFFFFFu, it will be set to exactly 0xFFFFFFFFu.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classQuaZip.html#a7ba6daf39263c308c683e7f72f74e0ae" title="Retrieves information about the current file. ">getCurrentFileInfo(QuaZipFileInfo64* info)const</a> </dd>
 <dd>

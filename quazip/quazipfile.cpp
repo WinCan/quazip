@@ -67,7 +67,7 @@ class QuaZipFilePrivate {
     /// The last error.
     int zipError;
     /// Resets \ref zipError.
-    inline void resetZipError() const {setZipError(UNZ_OK);}
+    inline void resetZipError() const {setZipError(ZIP_OK);}
     /// Sets the zip error.
     /**
       This function is marked as const although it changes one field.
@@ -85,7 +85,7 @@ class QuaZipFilePrivate {
       uncompressedSize(0),
       crc(0),
       internal(true),
-      zipError(UNZ_OK) {}
+      zipError(ZIP_OK) {}
     /// The constructor for the corresponding QuaZipFile constructor.
     inline QuaZipFilePrivate(QuaZipFile *q, const QString &zipName):
       q(q),
@@ -95,7 +95,7 @@ class QuaZipFilePrivate {
       uncompressedSize(0),
       crc(0),
       internal(true),
-      zipError(UNZ_OK)
+      zipError(ZIP_OK)
       {
         zip=new QuaZip(zipName);
       }
@@ -108,7 +108,7 @@ class QuaZipFilePrivate {
       uncompressedSize(0),
       crc(0),
       internal(true),
-      zipError(UNZ_OK)
+      zipError(ZIP_OK)
       {
         zip=new QuaZip(zipName);
         this->fileName=fileName;
@@ -125,7 +125,7 @@ class QuaZipFilePrivate {
       uncompressedSize(0),
       crc(0),
       internal(false),
-      zipError(UNZ_OK) {}
+      zipError(ZIP_OK) {}
     /// The destructor.
     inline ~QuaZipFilePrivate()
     {
@@ -183,7 +183,7 @@ QuaZip *QuaZipFile::getZip() const
 
 QString QuaZipFile::getActualFileName()const
 {
-  p->setZipError(UNZ_OK);
+  p->setZipError(ZIP_OK);
   if (p->zip == NULL || (openMode() & WriteOnly))
     return QString();
   QString name=p->zip->getCurrentFileName();
@@ -241,7 +241,7 @@ void QuaZipFilePrivate::setZipError(int zipError) const
 {
   QuaZipFilePrivate *fakeThis = const_cast<QuaZipFilePrivate*>(this); // non-const
   fakeThis->zipError=zipError;
-  if(zipError==UNZ_OK)
+  if(zipError==ZIP_OK)
     q->setErrorString(QString());
   else
     q->setErrorString(QuaZipFile::tr("ZIP/UNZIP API error %1").arg(zipError));
@@ -290,7 +290,7 @@ bool QuaZipFile::open(OpenMode mode, int *method, int *level, bool raw, const ch
       }
     }
     p->setZipError(unzOpenCurrentFile3(p->zip->getUnzFile(), method, level, (int)raw, password));
-    if(p->zipError==UNZ_OK) {
+    if(p->zipError==ZIP_OK) {
       setOpenMode(mode);
       p->raw=raw;
       return true;
@@ -347,7 +347,7 @@ bool QuaZipFile::open(OpenMode mode, const QuaZipNewInfo& info,
           method, level, (int)raw,
           windowBits, memLevel, strategy,
           password, (uLong)crc, p->zip->isZip64Enabled()));
-    if(p->zipError==UNZ_OK) {
+    if(p->zipError==ZIP_OK) {
       p->writePos=0;
       setOpenMode(mode);
       p->raw=raw;
@@ -420,10 +420,10 @@ qint64 QuaZipFile::size()const
 qint64 QuaZipFile::csize()const
 {
   unz_file_info64 info_z;
-  p->setZipError(UNZ_OK);
+  p->setZipError(ZIP_OK);
   if(p->zip==NULL||p->zip->getMode()!=QuaZip::mdUnzip) return -1;
   p->setZipError(unzGetCurrentFileInfo64(p->zip->getUnzFile(), &info_z, NULL, 0, NULL, 0, NULL, 0));
-  if(p->zipError!=UNZ_OK)
+  if(p->zipError!=ZIP_OK)
     return -1;
   return info_z.compressed_size;
 }
@@ -431,10 +431,10 @@ qint64 QuaZipFile::csize()const
 qint64 QuaZipFile::usize()const
 {
   unz_file_info64 info_z;
-  p->setZipError(UNZ_OK);
+  p->setZipError(ZIP_OK);
   if(p->zip==NULL||p->zip->getMode()!=QuaZip::mdUnzip) return -1;
   p->setZipError(unzGetCurrentFileInfo64(p->zip->getUnzFile(), &info_z, NULL, 0, NULL, 0, NULL, 0));
-  if(p->zipError!=UNZ_OK)
+  if(p->zipError!=ZIP_OK)
     return -1;
   return info_z.uncompressed_size;
 }
@@ -455,7 +455,7 @@ bool QuaZipFile::getFileInfo(QuaZipFileInfo64 *info)
     if(p->zip==NULL||p->zip->getMode()!=QuaZip::mdUnzip) return false;
     p->zip->getCurrentFileInfo(info);
     p->setZipError(p->zip->getZipError());
-    return p->zipError==UNZ_OK;
+    return p->zipError==ZIP_OK;
 }
 
 void QuaZipFile::close()
@@ -475,7 +475,7 @@ void QuaZipFile::close()
     qWarning("Wrong open mode: %d", (int)openMode());
     return;
   }
-  if(p->zipError==UNZ_OK) setOpenMode(QIODevice::NotOpen);
+  if(p->zipError==ZIP_OK) setOpenMode(QIODevice::NotOpen);
   else return;
   if(p->internal) {
     p->zip->close();
@@ -485,7 +485,7 @@ void QuaZipFile::close()
 
 qint64 QuaZipFile::readData(char *data, qint64 maxSize)
 {
-  p->setZipError(UNZ_OK);
+  p->setZipError(ZIP_OK);
   qint64 bytesRead=unzReadCurrentFile(p->zip->getUnzFile(), data, (unsigned)maxSize);
   if (bytesRead < 0) {
     p->setZipError((int) bytesRead);

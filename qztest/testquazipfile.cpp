@@ -153,7 +153,7 @@ void TestQuaZipFile::zipUnzip()
         QVERIFY(archivedData != originalData);
     }
     testUnzip.close();
-    QCOMPARE(testUnzip.getZipError(), UNZ_OK);
+    QCOMPARE(testUnzip.getZipError(), ZIP_OK);
     // clean up
     removeTestFiles(fileNames);
     testFile.remove();

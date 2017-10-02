@@ -60,13 +60,13 @@ bool JlCompress::compressFile(QuaZip* zip, QString fileName, QString fileDest) {
     if(!outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileDest, inFile.fileName()))) return false;
 
     // Copio i dati
-    if (!copyData(inFile, outFile) || outFile.getZipError()!=UNZ_OK) {
+    if (!copyData(inFile, outFile) || outFile.getZipError()!=ZIP_OK) {
         return false;
     }
 
     // Chiudo i file
     outFile.close();
-    if (outFile.getZipError()!=UNZ_OK) return false;
+    if (outFile.getZipError()!=ZIP_OK) return false;
     inFile.close();
 
     return true;
@@ -138,7 +138,7 @@ bool JlCompress::extractFile(QuaZip* zip, QString fileName, QString fileDest) {
     if (!fileName.isEmpty())
         zip->setCurrentFile(fileName);
     QuaZipFile inFile(zip);
-    if(!inFile.open(QIODevice::ReadOnly) || inFile.getZipError()!=UNZ_OK) return false;
+    if(!inFile.open(QIODevice::ReadOnly) || inFile.getZipError()!=ZIP_OK) return false;
 
     // Controllo esistenza cartella file risultato
     QDir curDir;
@@ -170,7 +170,7 @@ bool JlCompress::extractFile(QuaZip* zip, QString fileName, QString fileDest) {
     if(!outFile.open(QIODevice::WriteOnly)) return false;
 
     // Copio i dati
-    if (!copyData(inFile, outFile) || inFile.getZipError()!=UNZ_OK) {
+    if (!copyData(inFile, outFile) || inFile.getZipError()!=ZIP_OK) {
         outFile.close();
         removeFile(QStringList(fileDest));
         return false;
@@ -179,7 +179,7 @@ bool JlCompress::extractFile(QuaZip* zip, QString fileName, QString fileDest) {
 
     // Chiudo i file
     inFile.close();
-    if (inFile.getZipError()!=UNZ_OK) {
+    if (inFile.getZipError()!=ZIP_OK) {
         removeFile(QStringList(fileDest));
         return false;
     }

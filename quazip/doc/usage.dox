@@ -53,7 +53,7 @@
  *
  * - Both QuaZip and QuaZipFile have getZipError() function, which return
  *   error code of the last ZIP/UNZIP API call. Most function calls
- *   reset error code to UNZ_OK on success and set error code on
+ *   reset error code to ZIP_OK on success and set error code on
  *   failure. Some functions do not reset error code. Most of them are
  *   \c const and do not access ZIP archive in any way. Some, on the
  *   other hand, \em do access ZIP archive, but do not reset or set
@@ -65,7 +65,7 @@
  *   error. See "zip.h" and "unzip.h" of the ZIP/UNZIP package for error
  *   codes.
  * - If the function returns error-stating value (like \c false), but
- *   getZipError() returns UNZ_OK, it means that you did something
+ *   getZipError() returns ZIP_OK, it means that you did something
  *   obviously wrong. For example, tried to write in the archive open
  *   for reading or not open at all. You better just not do that!
  *   Most functions also issue a warning using qWarning() function in

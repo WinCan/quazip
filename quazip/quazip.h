@@ -272,9 +272,9 @@ class QUAZIP_EXPORT QuaZip {
     /// Returns \c true if ZIP file is open, \c false otherwise.
     bool isOpen() const;
     /// Returns the error code of the last operation.
-    /** Returns \c UNZ_OK if the last operation was successful.
+    /** Returns \c ZIP_OK if the last operation was successful.
      *
-     * Error code resets to \c UNZ_OK every time you call any function
+     * Error code resets to \c ZIP_OK every time you call any function
      * that accesses something inside ZIP archive, even if it is \c
      * const (like getEntriesCount()). open() and close() calls reset
      * error code too. See documentation for the specific functions for
@@ -310,13 +310,13 @@ class QUAZIP_EXPORT QuaZip {
      * Should be used only in QuaZip::mdUnzip mode.
      *
      * \note If the end of file was reached, getZipError() will return
-     * \c UNZ_OK instead of \c UNZ_END_OF_LIST_OF_FILE. This is to make
+     * \c ZIP_OK instead of \c ZIP_END_OF_LIST_OF_FILE. This is to make
      * things like this easier:
      * \code
      * for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
      *   // do something
      * }
-     * if(zip.getZipError()==UNZ_OK) {
+     * if(zip.getZipError()==ZIP_OK) {
      *   // ok, there was no error
      * }
      * \endcode
@@ -333,8 +333,8 @@ class QUAZIP_EXPORT QuaZip {
      *
      * Here are the differences from the original implementation:
      *
-     * - If the file was not found, error code is \c UNZ_OK, not \c
-     *   UNZ_END_OF_LIST_OF_FILE (see also goToNextFile()).
+     * - If the file was not found, error code is \c ZIP_OK, not \c
+     *   ZIP_END_OF_LIST_OF_FILE (see also goToNextFile()).
      * - If this function fails, it unsets the current file rather than
      *   resetting it back to what it was before the call.
      *
@@ -362,7 +362,7 @@ class QUAZIP_EXPORT QuaZip {
      * - ZIP is not open;
      * - ZIP does not have current file.
      *
-     * In both cases getZipError() returns \c UNZ_OK since there
+     * In both cases getZipError() returns \c ZIP_OK since there
      * is no ZIP/UNZIP API call.
      *
      * This overload doesn't support zip64, but will work OK on zip64 archives
