@@ -110,8 +110,8 @@ const char zip_copyright[] =" zip 1.01 Copyright 1998-2004 Gilles Vollant - http
 #define DESCRIPTORHEADERMAGIC    (0x08074b50)
 #define CENTRALHEADERMAGIC  (0x02014b50)
 #define ENDHEADERMAGIC      (0x06054b50)
-#define ZIP64ENDHEADERMAGIC      (0x6064b50)
-#define ZIP64ENDLOCHEADERMAGIC   (0x7064b50)
+#define ZIP64ENDHEADERMAGIC      (0x06064b50)
+#define ZIP64ENDLOCHEADERMAGIC   (0x07064b50)
 
 #define FLAG_LOCALHEADER_OFFSET (0x06)
 #define CRC_LOCALHEADER_OFFSET  (0x0e)
@@ -381,12 +381,9 @@ local int zip64local_getShort OF((const zlib_filefunc64_32_def* pzlib_filefunc_d
 
 local int zip64local_getShort (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong* pX)
 {
-    uLong x ;
     int i = 0;
-    int err;
-
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-    x = (uLong)i;
+    int err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
+    uLong x = (uLong)i;
 
     if (err==ZIP_OK)
         err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
@@ -403,24 +400,16 @@ local int zip64local_getLong OF((const zlib_filefunc64_32_def* pzlib_filefunc_de
 
 local int zip64local_getLong (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong* pX)
 {
-    uLong x ;
     int i = 0;
-    int err;
+    int err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
+    uLong x = (uLong)i;
 
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-    x = (uLong)i;
-
-    if (err==ZIP_OK)
-        err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-    x += ((uLong)i)<<8;
-
-    if (err==ZIP_OK)
-        err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-    x += ((uLong)i)<<16;
-
-    if (err==ZIP_OK)
-        err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-    x += ((uLong)i)<<24;
+    for(unsigned char shift = 8 ; shift < 32 ; shift+=8)
+    {
+        if (err==ZIP_OK)
+            err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
+        x += ((uLong)i)<<shift;
+    }
 
     if (err==ZIP_OK)
         *pX = x;
@@ -434,40 +423,16 @@ local int zip64local_getLong64 OF((const zlib_filefunc64_32_def* pzlib_filefunc_
 
 local int zip64local_getLong64 (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T *pX)
 {
-  ZPOS64_T x;
   int i = 0;
-  int err;
+  int err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
+  ZPOS64_T x = (ZPOS64_T)i;
 
-  err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x = (ZPOS64_T)i;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<8;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<16;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<24;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<32;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<40;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<48;
-
-  if (err==ZIP_OK)
-    err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
-  x += ((ZPOS64_T)i)<<56;
+  for(unsigned char shift = 8 ; shift < 64 ; shift+=8)
+  {
+      if (err==ZIP_OK)
+          err = zip64local_getByte(pzlib_filefunc_def,filestream,&i);
+      x += ((ZPOS64_T)i)<<shift;
+  }
 
   if (err==ZIP_OK)
     *pX = x;
@@ -528,15 +493,17 @@ local ZPOS64_T zip64local_SearchCentralDir(const zlib_filefunc64_32_def* pzlib_f
       break;
 
     for (i=(int)uReadSize-3; (i--)>0;)
+    {
       if (((*(buf+i))==0x50) && ((*(buf+i+1))==0x4b) &&
         ((*(buf+i+2))==0x05) && ((*(buf+i+3))==0x06))
       {
         uPosFound = uReadPos+i;
         break;
       }
+    }
 
-      if (uPosFound!=0)
-        break;
+    if (uPosFound!=0)
+      break;
   }
   TRYFREE(buf);
   return uPosFound;

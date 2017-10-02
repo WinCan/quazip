@@ -88,6 +88,12 @@ typedef uLongf z_crc_t;
 #   include <errno.h>
 #endif
 
+#define LOCALHEADERMAGIC    (0x04034b50)
+#define DESCRIPTORHEADERMAGIC    (0x08074b50)
+#define CENTRALHEADERMAGIC  (0x02014b50)
+#define ENDHEADERMAGIC      (0x06054b50)
+#define ZIP64ENDHEADERMAGIC      (0x06064b50)
+#define ZIP64ENDLOCHEADERMAGIC   (0x07064b50)
 
 #ifndef local
 #  define local static
@@ -569,7 +575,7 @@ local ZPOS64_T unz64local_SearchCentralDir64(const zlib_filefunc64_32_def* pzlib
     if (unz64local_getLong(pzlib_filefunc_def,filestream,&uL)!=UNZ_OK)
         return 0;
 
-    if (uL != 0x06064b50)
+    if (uL != ZIP64ENDHEADERMAGIC)
         return 0;
 
     return relativeOffset;
