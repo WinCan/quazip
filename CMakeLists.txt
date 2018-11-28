@@ -1,6 +1,8 @@
 project(QuaZip)
 cmake_minimum_required(VERSION 2.6)
 
+cmake_policy(SET CMP0020 NEW)
+
 # CMP0042: Explicitly acknowledge MACOSX_RPATH
 # (introduced in CMake 2.8.12, enabled by default in CMake 3.0,
 # and producing a warning when unset since 3.7.1)
