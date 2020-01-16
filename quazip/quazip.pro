@@ -1,6 +1,6 @@
 TEMPLATE = lib
 CONFIG += qt warn_on
-CONFIG += staticlib
+#CONFIG += staticlib
 QT -= gui
 
 # The ABI version.
@@ -86,3 +86,8 @@ symbian {
         BLD_INF_RULES.prj_exports += "$$header $$exportheaders.path/$$basename(header)"
     }
 }
+
+LIBS += -lz
+
+BUILD_ROOT = $${OUT_PWD}/../../../../../
+DESTDIR = $${BUILD_ROOT}build/lib

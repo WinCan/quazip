@@ -20,6 +20,7 @@ HEADERS += \
 
 SOURCES += $$PWD/qioapi.cpp \
            $$PWD/JlCompress.cpp \
+           $$PWD/common.c \
            $$PWD/quaadler32.cpp \
            $$PWD/quacrc32.cpp \
            $$PWD/quagzipfile.cpp \

@@ -236,12 +236,28 @@ bool JlCompress::compressFiles(QString fileCompressed, QStringList files) {
 
     // Comprimo i file
     QFileInfo info;
-    Q_FOREACH (QString file, files) {
+    for (const QString& file : qAsConst(files)) {
+        auto result = false;
         info.setFile(file);
-        if (!info.exists() || !compressFile(&zip,file,info.fileName())) {
-            QFile::remove(fileCompressed);
-            return false;
+        if (info.exists())
+        {
+            if (info.isDir())
+            {
+                QDir containingDir(file);
+                containingDir.cdUp();
+                result = compressSubDir(&zip,file,containingDir.path(),true,0);
+            }
+            else if (info.isFile())
+            {
+                result = compressFile(&zip,file,info.fileName());
+            }
+            if (result)
+            {
+                continue;
+            }
         }
+        QFile::remove(fileCompressed);
+        return false;
     }
 
     // Chiudo il file zip
@@ -250,7 +266,6 @@ bool JlCompress::compressFiles(QString fileCompressed, QStringList files) {
         QFile::remove(fileCompressed);
         return false;
     }
-
     return true;
 }
 
@@ -440,4 +455,4 @@ QStringList JlCompress::extractFiles(QIODevice *ioDevice, QStringList files, QSt
 {
     QuaZip zip(ioDevice);
     return extractFiles(zip, files, dir);
-} 
+}
