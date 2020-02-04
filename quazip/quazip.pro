@@ -1,6 +1,5 @@
 TEMPLATE = lib
-CONFIG += qt warn_on
-#CONFIG += staticlib
+
 QT -= gui
 
 # The ABI version.
@@ -34,28 +33,30 @@ CONFIG(staticlib): DEFINES += QUAZIP_STATIC
 # Input
 include(quazip.pri)
 
-
 CONFIG(debug, debug|release) {
-     mac: TARGET = $$join(TARGET,,,_debug) 
-     win32: TARGET = $$join(TARGET,,,d)
+     mac: TARGET = $$join(TARGET,,,_debug)
+     CONFIG += warn_on
+}
+else {
+     CONFIG += warn_off
 }
 
 unix:!symbian {
-    headers.path=$$PREFIX/include/quazip
-    headers.files=$$HEADERS
-    target.path=$$PREFIX/lib/$${LIB_ARCH}
-    INSTALLS += headers target
+#    headers.path=$$PREFIX/include/quazip
+#    headers.files=$$HEADERS
+#    target.path=$$PREFIX/lib/$${LIB_ARCH}
+#    INSTALLS += headers target
 
-	OBJECTS_DIR=.obj
-	MOC_DIR=.moc
+#	OBJECTS_DIR=.obj
+#	MOC_DIR=.moc
 	
 }
 
 win32 {
-    headers.path=$$PREFIX/include/quazip
-    headers.files=$$HEADERS
-    target.path=$$PREFIX/lib
-    INSTALLS += headers target
+#    headers.path=$$PREFIX/include/quazip
+#    headers.files=$$HEADERS
+#    target.path=$$PREFIX/lib
+#    INSTALLS += headers target
     # workaround for qdatetime.h macro bug
     DEFINES += NOMINMAX
 }
