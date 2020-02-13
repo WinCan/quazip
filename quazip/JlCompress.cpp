@@ -374,6 +374,10 @@ QStringList JlCompress::extractDir(QuaZip &zip, const QString &dir)
     }
 
     QDir directory(dir);
+    if (!directory.exists() && !directory.mkpath("."))
+    {
+        return QStringList();
+    }
     QStringList extracted;
     if (!zip.goToFirstFile()) {
         return QStringList();
