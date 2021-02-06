@@ -24,6 +24,11 @@ if (NOT WIN32)
 endif ()
 
 set_target_properties(${QUAZIP_LIB_TARGET_NAME} quazip_static PROPERTIES VERSION 1.0.0 SOVERSION 1 DEBUG_POSTFIX d)
+
+if (ANDROID)
+    # Hack to link with a dynamic zlib library. Bug description: https://github.com/android/ndk/issues/1179
+    set(ZLIB_LIBRARIES z)
+endif()
 # Link against ZLIB_LIBRARIES if needed (on Windows this variable is empty)
 target_link_libraries(${QUAZIP_LIB_TARGET_NAME} quazip_static ${QT_QTMAIN_LIBRARY} ${QTCORE_LIBRARIES} ${ZLIB_LIBRARIES})
 
