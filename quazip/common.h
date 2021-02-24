@@ -30,10 +30,10 @@ typedef uLongf z_crc_t;
 #define ZIP64ENDHEADERMAGIC      (0x06064b50)
 #define ZIP64ENDLOCHEADERMAGIC   (0x07064b50)
 
-#ifndef local
-#  define local static
+#ifndef QUAZIP_LOCAL
+#  define QUAZIP_LOCAL static
 #endif
-/* compile with -Dlocal if your debugger can't find static symbols */
+/* compile with -DQUAZIP_LOCAL if your debugger can't find static symbols */
 
 #define LOCALHEADERMAGIC    (0x04034b50)
 #define DESCRIPTORHEADERMAGIC    (0x08074b50)
