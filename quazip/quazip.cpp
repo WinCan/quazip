@@ -236,6 +236,7 @@ bool QuaZip::open(Mode mode, zlib_filefunc_def* ioApi)
     }
   }
   unsigned flags = 0;
+  flags |= ZIP_ENCODING_UTF8;
   switch(mode) {
     case mdUnzip:
       if (ioApi == NULL) {
