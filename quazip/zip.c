@@ -1504,7 +1504,7 @@ int Write_Zip64EndOfCentralDirectoryRecord(zip64_internal* zi, uLong size_centra
     err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)45,2);
 
   if (err==ZIP_OK) /* version needed */
-      err = zip64local_putValue(&zi->z_filefunc, zi->filestream,(uLong)((zi->ci.flag & ZIP_ENCODING_UTF8) ? 63 : 45), 2);
+    err = zip64local_putValue(&zi->z_filefunc, zi->filestream,(uLong)((zi->ci.flag & ZIP_ENCODING_UTF8) ? 63 : 45), 2);
 
   if (err==ZIP_OK) /* number of this disk */
     err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)0,4);
