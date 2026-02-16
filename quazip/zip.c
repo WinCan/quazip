@@ -632,6 +632,10 @@ extern zipFile ZEXPORT zipOpen64 (voidpf file, int append)
     return zipOpen3(file,append,NULL,NULL, ZIP_DEFAULT_FLAGS);
 }
 
+static uLong getVersionNum(uLong flags) {
+    return (uLong)flags & ZIP_ENCODING_UTF8 ? 63 : 45;
+}
+
 int Write_LocalFileHeader(zip64_internal* zi, const char* filename,
                           uInt size_extrafield_local,
                           const void* extrafield_local,
@@ -646,10 +650,8 @@ int Write_LocalFileHeader(zip64_internal* zi, const char* filename,
 
   if (err==ZIP_OK)
   {
-    if (zi->ci.flag & ZIP_ENCODING_UTF8)
-      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)63,2); /* Version 6.3 is required for Unicode support */
-    else if (zi->ci.zip64)
-      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)45,2); /* version needed to extract */
+    if (zi->ci.zip64)
+      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,getVersionNum(zi->ci.flag),2); /* version needed to extract */
     else
       err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)version_to_extract,2);
   }
@@ -1310,7 +1312,7 @@ extern int ZEXPORT zipCloseFileInZipRaw64 (zipFile file, ZPOS64_T uncompressed_s
       /*version Made by*/
       zip64local_putValue_inmemory(zi->ci.central_header+4,(uLong)45,2);
       /*version needed*/
-      zip64local_putValue_inmemory(zi->ci.central_header + 6,(uLong)((zi->ci.flag & ZIP_ENCODING_UTF8) ? 63 : 45), 2);
+      zip64local_putValue_inmemory(zi->ci.central_header + 6,getVersionNum(zi->ci.flag),2);
     }
 
     zip64local_putValue_inmemory(zi->ci.central_header+16,crc32,4); /*crc*/
@@ -1504,7 +1506,7 @@ int Write_Zip64EndOfCentralDirectoryRecord(zip64_internal* zi, uLong size_centra
     err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)45,2);
 
   if (err==ZIP_OK) /* version needed */
-    err = zip64local_putValue(&zi->z_filefunc, zi->filestream,(uLong)((zi->ci.flag & ZIP_ENCODING_UTF8) ? 63 : 45), 2);
+    err = zip64local_putValue(&zi->z_filefunc, zi->filestream,getVersionNum(zi->ci.flag),2);
 
   if (err==ZIP_OK) /* number of this disk */
     err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)0,4);
