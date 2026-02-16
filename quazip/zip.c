@@ -647,11 +647,11 @@ int Write_LocalFileHeader(zip64_internal* zi, const char* filename,
   if (err==ZIP_OK)
   {
     if (zi->ci.flag & ZIP_ENCODING_UTF8)
-      err = zip64local_putValue(&zi->z_filefunc, zi->filestream, (uLong)63,2); /* Version 6.3 is required for Unicode support */
-    if (zi->ci.zip64)
-      err = zip64local_putValue(&zi->z_filefunc, zi->filestream, (uLong)45,2); /* version needed to extract */
+      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)63,2); /* Version 6.3 is required for Unicode support */
+    else if (zi->ci.zip64)
+      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)45,2); /* version needed to extract */
     else
-      err = zip64local_putValue(&zi->z_filefunc, zi->filestream, (uLong)version_to_extract, 2);
+      err = zip64local_putValue(&zi->z_filefunc,zi->filestream,(uLong)version_to_extract, 2);
   }
 
   if (err==ZIP_OK)
@@ -808,17 +808,17 @@ extern int ZEXPORT zipOpenNewFileInZip4_64 (zipFile file, const char* filename, 
     zi->ci.flag = flagBase;
     if (zi->flags & ZIP_ENCODING_UTF8)
       zi->ci.flag |= ZIP_ENCODING_UTF8;
-    if ((level == 8) || (level == 9))
+    if ((level==8) || (level==9))
       zi->ci.flag |= 2;
-    if (level == 2)
+    if (level ==2)
       zi->ci.flag |= 4;
-    if (level == 1)
+    if (level ==1)
       zi->ci.flag |= 6;
     if (password != NULL)
       zi->ci.flag |= 1;
     if (version_to_extract >= 20
-      && ((zi->flags & ZIP_WRITE_DATA_DESCRIPTOR) != 0
-          || (zi->flags & ZIP_SEQUENTIAL) != 0))
+          && ((zi->flags & ZIP_WRITE_DATA_DESCRIPTOR) != 0
+              || (zi->flags & ZIP_SEQUENTIAL) != 0))
       zi->ci.flag |= 8;
 
     zi->ci.crc32 = 0;
